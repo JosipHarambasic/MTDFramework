@@ -1,6 +1,7 @@
 import subprocess
 import time
 from Parser import Parser
+from datetime import datetime
 
 def mitigateCryptojacker():
 
@@ -32,9 +33,11 @@ def mitigateCryptojacker():
             output = subprocess.Popen("locate " + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
 
             print("Check log.txt to see where the files are stored that can be deleted manually")
-            logFile = " >> log.txt"
+            subprocess.Popen("touch log.txt", shell=True, stdin=subprocess.PIPE)
+            dateTime = f"Date and Time: {datetime.now()}"
+            subprocess.Popen(f"{dateTime} >> log.txt", shell=True, stdin=subprocess.PIPE)
             for j in output.stdout:
-                subprocess.Popen(str(j) + logFile, shell=True, stdin=subprocess.PIPE)
+                subprocess.Popen(f"{str(j)} >> log.txt", shell=True, stdin=subprocess.PIPE)
     else:
         print("no suspect task found")
 

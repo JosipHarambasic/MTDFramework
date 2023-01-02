@@ -3,7 +3,6 @@ import socket
 import logging
 import subprocess
 
-
 log = logging.getLogger("main")
 logging.basicConfig(level=logging.INFO)
 
