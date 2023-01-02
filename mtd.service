@@ -1,0 +1,11 @@
+[Unit]
+Description=MTDFramework
+After=network.target
+
+[Service]
+ExecStart=/opt/MTDFramework/venv3/bin/python3 /opt/MTDFramework/server.py
+WorkingDirectory=/opt/MTDFramework/
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
