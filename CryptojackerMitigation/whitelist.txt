@@ -1,0 +1,1 @@
+es_sensor,sshd:,ssh,curl,..pt/venvs/electrosense-s,opt/venvs/electrosense-sensor-mqtt/bin/python3,root@pts/1,root@pts/2,root@pts/3,root@pts/4,root@pts/5,TCP,/usr/share/electrosense/bin/webrtc,usr/share/electrosense/bin/webrtc
