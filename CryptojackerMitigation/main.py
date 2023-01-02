@@ -21,17 +21,20 @@ def mitigateCryptojacker():
             time.sleep(10)
             try:
                 subprocess.Popen("kill -9 " + i, shell=True, stdin=subprocess.PIPE)
+                print(f"Killed process with PID: {i}")
             except:
-                print("Process: " + i + "already killed")
+                print("Process not found, must be already killed")
             try:
-                subprocess.Popen("pkill -f" + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
+                subprocess.Popen("pkill" + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
+                print(f"Killing all remaining processes with the same process name: {maliciousPrograms[i]}")
             except:
-                print("No more processes with name '" + maliciousPrograms[i] + "' found, to be killed")
-
-            print("killed process: " + maliciousPrograms[i] + " with PID: " + maliciousPrograms[i])
+                print("No more processes with name '" + maliciousPrograms[i] + "'")
             output = subprocess.Popen("locate " + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
+
+            print("Check log.txt to see where the files are stored that can be deleted manually")
+            logFile = " >> log.txt"
             for j in output.stdout:
-                print(j)
+                subprocess.Popen(str(j) + logFile, shell=True, stdin=subprocess.PIPE)
     else:
         print("no suspect task found")
 
@@ -40,7 +43,7 @@ def startNetworkTracking():
     subprocess.Popen("nethogs -t -v 2 > " + outputFileName, shell=True, stdin=subprocess.PIPE)
     time.sleep(60)
     subprocess.Popen("pkill -f nethogs", shell=True, stdin=subprocess.PIPE)
-    print("--- output saved in " + outputFileName)
+    print("output saved in " + outputFileName)
 
 
 if __name__ == '__main__':

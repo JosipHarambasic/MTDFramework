@@ -48,17 +48,9 @@ class Parser:
                     break
                 check += 1
 
-
         maliciousTasks = {}
-        for k,v in runningT.items():
+        for k, v in runningT.items():
             if v not in whitelistFile:
                 maliciousTasks[k] = v
         print(maliciousTasks)
         return runningT
-
-
-# TODO create a output which looks like this {PID: {name:xmrig, sendBytes:X, recvBytes:X}}
-# TODO send and receive can be calculated with the first appearance of the task minus last one
-a = Parser("whitelist.txt", "nethogs.txt").parse()
-for i in a:
-    print(i)

@@ -1,10 +1,7 @@
 import os
 import socket
 import logging
-import ReconnaissanceMitigation
-import CryptojackerMitigation
 import subprocess
-import pathlib
 
 
 log = logging.getLogger("main")
@@ -15,7 +12,6 @@ HOST = ""
 
 # Port to listen on (non-privileged ports are > 1023)
 PORT = 1234
-
 
 def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
