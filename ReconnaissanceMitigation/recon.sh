@@ -52,6 +52,12 @@ iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
 iptables -A INPUT -m recent --name portscan --remove
 iptables -A FORWARD -m recent --name portscan --remove
 
+# These rules add scanners to the portscan list, and log the attempt.
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
