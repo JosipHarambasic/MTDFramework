@@ -1,4 +1,5 @@
 import os
+import random
 import socket
 import logging
 import subprocess
@@ -40,4 +41,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    print("hello")
+    #main()

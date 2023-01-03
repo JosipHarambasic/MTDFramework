@@ -1,17 +1,17 @@
 #!/bin/sh
-#
-#
-# Script is for stopping Portscan and smurf attack
+### Script is for stopping Portscan and increase the time for a portscan
 
 ### first flush all the iptables Rules
 iptables -F
+iptables -X
 
 
-# INPUT iptables Rules
-# Accept loopback input
+### INPUT iptables Rules
+### Accept loopback input
 iptables -A INPUT -i lo -p all -j ACCEPT
 
-# add a rule to explicitly allow all traffic related to an existing connection
+### add a rule to explicitly allow all traffic related to an existing connection
+### in our case it is the already established connection to the ElectroSense platform
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 ### DROP spoofing packets
@@ -30,58 +30,51 @@ iptables -A INPUT -d 0.0.0.0/8 -j DROP
 iptables -A INPUT -d 239.255.255.0/24 -j DROP
 iptables -A INPUT -d 255.255.255.255 -j DROP
 
-#for SMURF attack protection
-iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
-iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
-iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
-
-# Dropping all invalid packets
+### Dropping all invalid packets, since those are reconnaissance attack packets
 iptables -A INPUT -m state --state INVALID -j DROP
-iptables -A FORWARD -m state --state INVALID -j DROP
-iptables -A OUTPUT -m state --state INVALID -j DROP
 
-# flooding of RST packets, smurf attack Rejection
+### if we allow this then information about the OS are shown else not
+iptables -A FORWARD -m state --state INVALID -j DROP
+
+### We can also drop the state but this will cause that we can't detect the IP address, this is
+### unfortunate since we would like to get IP address to be able to connect to it
+# iptables -A OUTPUT -m state --state INVALID -j DROP
+
+### flooding of RST packets, smurf attack Rejection
 iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
-# Protecting portscans
-# Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
+### Protecting against portscans
+### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
 iptables -A INPUT -m recent --name portscan --rcheck --seconds 500 -j DROP
 iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
 
-# Remove attacking IP after 24 hours
+### Remove attacking IP after 24 hours
 iptables -A INPUT -m recent --name portscan --remove
 iptables -A FORWARD -m recent --name portscan --remove
 
-# These rules add scanners to the portscan list, and log the attempt.
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+### Allow the following ports through from outside
+### SMTP mail sender = 25
+### DNS =53
+### HTTP = 80
+### HTTPS = 443
+### SSH = 22
 
-# Allow the following ports through from outside
-# SMTP mail sender = 25
-# DNS =53
-# HTTP = 80
-# HTTPS = 443
-# SSH = 22
-
-# Keep the following ports through open to the public
+### Keep the following ports through open to the public
 iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
-# Allow ping means ICMP port is open (If you do not want ping replace ACCEPT with REJECT)
+### Allow ping means ICMP port is open (If you do not want ping replace ACCEPT with REJECT)
 iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 
-# Lastly reject All INPUT traffic
+### Lastly reject All INPUT traffic
 iptables -A INPUT -j REJECT
-
 
 ################# Below are for OUTPUT iptables rules #############################################
 
-## Allow loopback OUTPUT
+### Allow loopback OUTPUT
 iptables -A OUTPUT -o lo -j ACCEPT
 iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
@@ -91,11 +84,11 @@ iptables -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
 iptables -A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
 iptables -A OUTPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
-# Allow pings
+### Allow pings
 iptables -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 
-# Lastly Reject all Output traffic
+### Lastly Reject all Output traffic
 iptables -A OUTPUT -j REJECT
 
-## Reject Forwarding  traffic
+### Reject Forwarding  traffic
 iptables -A FORWARD -j REJECT
