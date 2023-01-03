@@ -8,7 +8,7 @@ def main():
     newMACAddress = "02:00:00:%02x:%02x:%02x" % (random.randint(0, 255),
                                                  random.randint(0, 255),
                                                  random.randint(0, 255))
-    subprocess.Popen(f"ifconfig eth0 hw ether {newMACAddress}", shell=True, stdin=subprocess.PIPE)
+    subprocess.Popen("ifconfig eth0 hw ether " + newMACAddress, shell=True, stdin=subprocess.PIPE)
     subprocess.Popen("ifconfig eth0 up", shell=True, stdin=subprocess.PIPE)
 
 
