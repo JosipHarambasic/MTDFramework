@@ -19,7 +19,7 @@ iptables -A INPUT -s 10.0.0.0/8 -j DROP
 iptables -A INPUT -s 169.254.0.0/16 -j DROP
 iptables -A INPUT -s 172.16.0.0/12 -j DROP
 iptables -A INPUT -s 127.0.0.0/8 -j DROP
-iptables -A INPUT -s 192.168.0.0/24 -j DROP
+# iptables -A INPUT -s 192.168.0.0/24 -j DROP
 
 iptables -A INPUT -s 224.0.0.0/4 -j DROP
 iptables -A INPUT -d 224.0.0.0/4 -j DROP
@@ -59,6 +59,12 @@ iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j D
 iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
 iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
+
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
+
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
 ### DNS =53
