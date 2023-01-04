@@ -8,11 +8,6 @@ iptables -X
 
 ### INPUT iptables Rules
 ### Accept loopback input
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
-
 iptables -A INPUT -i lo -p all -j ACCEPT
 
 ### add a rule to explicitly allow all traffic related to an existing connection
@@ -57,6 +52,18 @@ iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
 iptables -A INPUT -m recent --name portscan --remove
 iptables -A FORWARD -m recent --name portscan --remove
 
+# These rules add scanners to the portscan list, and log the attempt.
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
+
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
 ### DNS =53
