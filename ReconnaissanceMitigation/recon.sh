@@ -5,7 +5,7 @@
 iptables -F
 iptables -X
 
-
+### TODO Check how to block actual attack ip
 ### INPUT iptables Rules
 ### Accept loopback input
 iptables -A INPUT -i lo -p all -j ACCEPT
@@ -19,7 +19,6 @@ iptables -A INPUT -s 10.0.0.0/8 -j DROP
 iptables -A INPUT -s 169.254.0.0/16 -j DROP
 iptables -A INPUT -s 172.16.0.0/12 -j DROP
 iptables -A INPUT -s 127.0.0.0/8 -j DROP
-iptables -A INPUT -s 192.168.0.0/24 -j DROP
 
 iptables -A INPUT -s 224.0.0.0/4 -j DROP
 iptables -A INPUT -d 224.0.0.0/4 -j DROP
