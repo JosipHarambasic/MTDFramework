@@ -31,17 +31,17 @@ iptables -A INPUT -d 239.255.255.0/24 -j DROP
 iptables -A INPUT -d 255.255.255.255 -j DROP
 
 ### Dropping all invalid packets, since those are reconnaissance attack packets
-iptables -A INPUT -m state --state INVALID -j DROP
+#iptables -A INPUT -m state --state INVALID -j DROP
 
 ### if we allow this then information about the OS are shown else not
-iptables -A FORWARD -m state --state INVALID -j DROP
+#iptables -A FORWARD -m state --state INVALID -j DROP
 
 ### We can also drop the state but this will cause that we can't detect the IP address, this is
 ### unfortunate since we would like to get IP address to be able to connect to it
 # iptables -A OUTPUT -m state --state INVALID -j DROP
 
 ### flooding of RST packets, smurf attack Rejection
-iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
+#iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
 ### Protecting against portscans
 ### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
@@ -59,11 +59,11 @@ iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j D
 iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
 iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
-iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
 
-iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --update --seconds 2 --hitcount 20 -j DROP
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
 ### DNS =53
