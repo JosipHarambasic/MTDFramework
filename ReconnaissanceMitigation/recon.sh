@@ -8,6 +8,11 @@ iptables -X
 
 ### INPUT iptables Rules
 ### Accept loopback input
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
+iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
+
 iptables -A INPUT -i lo -p all -j ACCEPT
 
 ### add a rule to explicitly allow all traffic related to an existing connection
@@ -29,11 +34,6 @@ iptables -A INPUT -s 0.0.0.0/8 -j DROP
 iptables -A INPUT -d 0.0.0.0/8 -j DROP
 iptables -A INPUT -d 239.255.255.0/24 -j DROP
 iptables -A INPUT -d 255.255.255.255 -j DROP
-
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
 
 ### Dropping all invalid packets, since those are reconnaissance attack packets
 iptables -A INPUT -m state --state INVALID -j DROP
