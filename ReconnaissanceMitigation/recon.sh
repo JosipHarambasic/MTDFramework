@@ -30,6 +30,11 @@ iptables -A INPUT -d 0.0.0.0/8 -j DROP
 iptables -A INPUT -d 239.255.255.0/24 -j DROP
 iptables -A INPUT -d 255.255.255.255 -j DROP
 
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
+iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set
+iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
+
 ### Dropping all invalid packets, since those are reconnaissance attack packets
 iptables -A INPUT -m state --state INVALID -j DROP
 
@@ -52,10 +57,6 @@ iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
 iptables -A INPUT -m recent --name portscan --remove
 iptables -A FORWARD -m recent --name portscan --remove
 
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 5 -j DROP
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
 ### DNS =53
