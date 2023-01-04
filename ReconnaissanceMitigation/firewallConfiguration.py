@@ -7,7 +7,8 @@ def main():
     subprocess.Popen("iptables -X", shell=True, stdin=subprocess.PIPE)
 
     # adding actual rules
-    firewallConfiguration = [" -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT",
+    firewallConfiguration = [" -A INPUT -i lo -p all -j ACCEPT",
+                             " -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT",
                              " -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP",
                              " -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP",
                              " -A INPUT -m recent --name portscan --remove",
