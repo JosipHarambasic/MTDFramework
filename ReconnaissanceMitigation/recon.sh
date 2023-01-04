@@ -31,33 +31,26 @@ iptables -A INPUT -d 239.255.255.0/24 -j DROP
 iptables -A INPUT -d 255.255.255.255 -j DROP
 
 ### Dropping all invalid packets, since those are reconnaissance attack packets
-#iptables -A INPUT -m state --state INVALID -j DROP
+iptables -A INPUT -m state --state INVALID -j DROP
 
 ### if we allow this then information about the OS are shown else not
-#iptables -A FORWARD -m state --state INVALID -j DROP
+iptables -A FORWARD -m state --state INVALID -j DROP
 
 ### We can also drop the state but this will cause that we can't detect the IP address, this is
 ### unfortunate since we would like to get IP address to be able to connect to it
 # iptables -A OUTPUT -m state --state INVALID -j DROP
 
 ### flooding of RST packets, smurf attack Rejection
-#iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
 ### Protecting against portscans
 ### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
-#iptables -A INPUT -m recent --name portscan --rcheck --seconds 500 -j DROP
-#iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
+iptables -A INPUT -m recent --name portscan --rcheck --seconds 1500 -j DROP
+iptables -A FORWARD -m recent --name portscan --rcheck --seconds 1500 -j DROP
 
 ### Remove attacking IP after 24 hours
-#iptables -A INPUT -m recent --name portscan --remove
-#iptables -A FORWARD -m recent --name portscan --remove
-
-# These rules add scanners to the portscan list, and log the attempt.
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
-
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+iptables -A INPUT -m recent --name portscan --remove
+iptables -A FORWARD -m recent --name portscan --remove
 
 iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
 iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
