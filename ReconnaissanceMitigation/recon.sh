@@ -14,6 +14,18 @@ iptables -A INPUT -i lo -p all -j ACCEPT
 ### in our case it is the already established connection to the ElectroSense platform
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+iptables -A INPUT -s 169.254.0.0/16 -j DROP
+iptables -A INPUT -s 172.16.0.0/12 -j DROP
+
+iptables -A INPUT -s 224.0.0.0/4 -j DROP
+iptables -A INPUT -d 224.0.0.0/4 -j DROP
+iptables -A INPUT -s 240.0.0.0/5 -j DROP
+iptables -A INPUT -d 240.0.0.0/5 -j DROP
+iptables -A INPUT -s 0.0.0.0/8 -j DROP
+iptables -A INPUT -d 0.0.0.0/8 -j DROP
+iptables -A INPUT -d 239.255.255.0/24 -j DROP
+iptables -A INPUT -d 255.255.255.255 -j DROP
+
 ### Dropping all invalid packets, since those are reconnaissance attack packets
 iptables -A INPUT -m state --state INVALID -j DROP
 
@@ -40,13 +52,13 @@ iptables -A INPUT -p tcp -m tcp --dport 137 -m recent --name portscan --set -j L
 iptables -A INPUT -p tcp -m tcp --dport 137 -m recent --name portscan --set -j DROP
 
 iptables -A FORWARD -p tcp -m tcp --dport 137 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A FORWARD -p tcp -m tcp --dport 137 -m recent --name portscan --set -j DROP
+iptables -A FORWARD -p tcp -m tcp --dport  -m recent --name portscan --set -j DROP
 
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
 
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
 ### Allow the following ports through from outside
 ### SMTP mail sender = 25
 ### DNS =53
