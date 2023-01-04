@@ -21,7 +21,7 @@ def main():
                              " -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT",
                              " -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT",
                              " -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT",
-                             " -A INPUT -p icmp -m icmp --icmp -type 8 -j ACCEPT",
+                             " -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT",
                              " -A INPUT -j REJECT",
                              " -A OUTPUT -o lo -j ACCEPT",
                              " -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT",
@@ -29,7 +29,7 @@ def main():
                              " -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT",
                              " -A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT",
                              " -A OUTPUT -p tcp -m tcp --dport 22 -j ACCEPT",
-                             " -A OUTPUT -p icmp -m icmp --icmp -type 8 -j ACCEPT",
+                             " -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT",
                              " -A OUTPUT -j REJECT",
                              " -A FORWARD -j REJECT"
                              ]
