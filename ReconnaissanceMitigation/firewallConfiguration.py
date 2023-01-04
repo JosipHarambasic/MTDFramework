@@ -17,6 +17,7 @@ def main():
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set",
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 60 "
                              "--hitcount 3 -j DROP",
+                             " -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT",
                              " -A INPUT -p udp -m udp --dport 53 -j ACCEPT",
                              " -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT",
                              " -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT",
