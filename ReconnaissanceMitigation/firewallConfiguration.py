@@ -16,7 +16,22 @@ def main():
                              "3 -j DROP",
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set",
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 60 "
-                             "--hitcount 3 -j DROP "
+                             "--hitcount 3 -j DROP",
+                             " -A INPUT -p udp -m udp --dport 53 -j ACCEPT",
+                             " -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT",
+                             " -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT",
+                             " -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT",
+                             " -A INPUT -p icmp -m icmp --icmp -type 8 -j ACCEPT",
+                             " -A INPUT -j REJECT",
+                             " -A OUTPUT -o lo -j ACCEPT",
+                             " -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT",
+                             " -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT",
+                             " -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT",
+                             " -A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT",
+                             " -A OUTPUT -p tcp -m tcp --dport 22 -j ACCEPT",
+                             " -A OUTPUT -p icmp -m icmp --icmp -type 8 -j ACCEPT",
+                             " -A OUTPUT -j REJECT",
+                             " -A FORWARD -j REJECT"
                              ]
     print("Adding rules to iptables")
     counter = 0
