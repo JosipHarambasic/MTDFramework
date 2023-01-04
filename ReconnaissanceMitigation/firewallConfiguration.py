@@ -2,6 +2,11 @@ import subprocess
 
 
 def main():
+    # Clean iptables before adding actual rules
+    subprocess.Popen("iptables -F", shell=True, stdin=subprocess.PIPE)
+    subprocess.Popen("iptables -X", shell=True, stdin=subprocess.PIPE)
+
+    # adding actual rules
     firewallConfiguration = [" -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP",
                              " -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP",
                              " -A INPUT -m recent --name portscan --remove",
@@ -13,9 +18,16 @@ def main():
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 "
                              "--hitcount 5 -j DROP "
                              ]
+    print("Adding rules to iptables")
+    counter = 0
     for i in firewallConfiguration:
-        subprocess.Popen("iptables" + i, shell=True, stdin=subprocess.PIPE)
-        print("Added " + i + "Rule to iptables")
+        try:
+            subprocess.Popen("iptables" + i, shell=True, stdin=subprocess.PIPE)
+            counter += 1
+        except:
+            continue
+
+    print(str(counter) + "/" + str(len(firewallConfiguration)) + " rules were added")
 
 
 if __name__ == "__main__":
