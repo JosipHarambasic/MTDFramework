@@ -45,12 +45,12 @@ iptables -A INPUT -d 255.255.255.255 -j DROP
 
 ### Protecting against portscans
 ### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
-iptables -A INPUT -m recent --name portscan --rcheck --seconds 500 -j DROP
-iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
+#iptables -A INPUT -m recent --name portscan --rcheck --seconds 500 -j DROP
+#iptables -A FORWARD -m recent --name portscan --rcheck --seconds 500 -j DROP
 
 ### Remove attacking IP after 24 hours
-iptables -A INPUT -m recent --name portscan --remove
-iptables -A FORWARD -m recent --name portscan --remove
+#iptables -A INPUT -m recent --name portscan --remove
+#iptables -A FORWARD -m recent --name portscan --remove
 
 # These rules add scanners to the portscan list, and log the attempt.
 iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
