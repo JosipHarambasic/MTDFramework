@@ -12,11 +12,11 @@ def main():
                              " -A INPUT -m recent --name portscan --remove",
                              " -A FORWARD -m recent --name portscan --remove",
                              " -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --set",
-                             " -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount "
-                             "5 -j DROP",
+                             " -A INPUT -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 60 --hitcount "
+                             "3 -j DROP",
                              " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --set",
-                             " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 30 "
-                             "--hitcount 5 -j DROP "
+                             " -A FORWARD -p tcp -i eth0 -m state --state NEW -m recent --update --seconds 60 "
+                             "--hitcount 3 -j DROP "
                              ]
     print("Adding rules to iptables")
     counter = 0
