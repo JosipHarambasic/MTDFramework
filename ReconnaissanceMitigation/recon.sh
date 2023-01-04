@@ -4,8 +4,6 @@
 ### first flush all the iptables Rules
 iptables -F
 iptables -X
-
-### TODO Check how to block actual attack ip
 ### INPUT iptables Rules
 ### Accept loopback input
 iptables -A INPUT -i lo -p all -j ACCEPT
@@ -36,11 +34,9 @@ iptables -A FORWARD -m state --state INVALID -j DROP
 ### unfortunate since we would like to get IP address to be able to connect to it
 # iptables -A OUTPUT -m state --state INVALID -j DROP
 
-### flooding of RST packets, smurf attack Rejection
-#iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
-
 ### Protecting against port scans
-### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
+### Attacking IP will be blocked for ssh connection for 24 hours (3600 x 24 = 86400 Seconds)
+### port scans are still possible from the IP but get wrong data
 iptables -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP
 iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
 
