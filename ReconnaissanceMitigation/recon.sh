@@ -48,11 +48,11 @@ iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
 iptables -A INPUT -m recent --name portscan --remove
 iptables -A FORWARD -m recent --name portscan --remove
 
-iptables -A INPUT -p tcp -m tcp --dport 137 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A INPUT -p tcp -m tcp --dport 137 -m recent --name portscan --set -j DROP
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
-iptables -A FORWARD -p tcp -m tcp --dport 137 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A FORWARD -p tcp -m tcp --dport  -m recent --name portscan --set -j DROP
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
 iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --set
 iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
