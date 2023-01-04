@@ -15,26 +15,26 @@ iptables -A INPUT -i lo -p all -j ACCEPT
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 ### DROP spoofing packets
-#iptables -A INPUT -s 10.0.0.0/8 -j DROP
-#iptables -A INPUT -s 169.254.0.0/16 -j DROP
-#iptables -A INPUT -s 172.16.0.0/12 -j DROP
-#iptables -A INPUT -s 127.0.0.0/8 -j DROP
-# iptables -A INPUT -s 192.168.0.0/24 -j DROP
+iptables -A INPUT -s 10.0.0.0/8 -j DROP
+iptables -A INPUT -s 169.254.0.0/16 -j DROP
+iptables -A INPUT -s 172.16.0.0/12 -j DROP
+iptables -A INPUT -s 127.0.0.0/8 -j DROP
+iptables -A INPUT -s 192.168.0.0/24 -j DROP
 
-#iptables -A INPUT -s 224.0.0.0/4 -j DROP
-#iptables -A INPUT -d 224.0.0.0/4 -j DROP
-#iptables -A INPUT -s 240.0.0.0/5 -j DROP
-#iptables -A INPUT -d 240.0.0.0/5 -j DROP
-#iptables -A INPUT -s 0.0.0.0/8 -j DROP
-#iptables -A INPUT -d 0.0.0.0/8 -j DROP
-#iptables -A INPUT -d 239.255.255.0/24 -j DROP
-#iptables -A INPUT -d 255.255.255.255 -j DROP
+iptables -A INPUT -s 224.0.0.0/4 -j DROP
+iptables -A INPUT -d 224.0.0.0/4 -j DROP
+iptables -A INPUT -s 240.0.0.0/5 -j DROP
+iptables -A INPUT -d 240.0.0.0/5 -j DROP
+iptables -A INPUT -s 0.0.0.0/8 -j DROP
+iptables -A INPUT -d 0.0.0.0/8 -j DROP
+iptables -A INPUT -d 239.255.255.0/24 -j DROP
+iptables -A INPUT -d 255.255.255.255 -j DROP
 
 ### Dropping all invalid packets, since those are reconnaissance attack packets
-#iptables -A INPUT -m state --state INVALID -j DROP
+iptables -A INPUT -m state --state INVALID -j DROP
 
 ### if we allow this then information about the OS are shown else not
-#iptables -A FORWARD -m state --state INVALID -j DROP
+iptables -A FORWARD -m state --state INVALID -j DROP
 
 ### We can also drop the state but this will cause that we can't detect the IP address, this is
 ### unfortunate since we would like to get IP address to be able to connect to it
