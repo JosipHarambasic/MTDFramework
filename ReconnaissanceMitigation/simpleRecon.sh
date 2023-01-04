@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Protecting against portscans
+### Protecting against port scans
 ### Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)
 iptables -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP
 iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
