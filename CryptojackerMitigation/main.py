@@ -16,28 +16,16 @@ def mitigateCryptojacker():
     maliciousPrograms = Parser("whitelist.txt", "nethogs.txt").parse()
     if len(maliciousPrograms) > 0:
         for i in maliciousPrograms:
-            # cpu limit 'cpulimit -p PID -l 10'
-            subprocess.Popen("cpulimit -p " + maliciousPrograms[i] + " -l 10 -b", shell=True, stdout=subprocess.PIPE)
-            print("throttling the cpu usage to 10% of a CPU for 10 sec.")
-            time.sleep(10)
             try:
                 subprocess.Popen("kill -9 " + i, shell=True, stdin=subprocess.PIPE)
-                print(f"Killed process with PID: {i}")
+                print("Killed process with PID: " + i)
             except:
                 print("Process not found, must be already killed")
             try:
-                subprocess.Popen("pkill" + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
-                print(f"Killing all remaining processes with the same process name: {maliciousPrograms[i]}")
+                subprocess.Popen("pkill " + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
+                print("Killing all remaining processes with the same process name: " + maliciousPrograms[i])
             except:
                 print("No more processes with name '" + maliciousPrograms[i] + "'")
-            output = subprocess.Popen("locate " + maliciousPrograms[i], shell=True, stdin=subprocess.PIPE)
-
-            print("Check log.txt to see where the files are stored that can be deleted manually")
-            subprocess.Popen("touch log.txt", shell=True, stdin=subprocess.PIPE)
-            dateTime = f"Date and Time: {datetime.now()}"
-            subprocess.Popen(f"{dateTime} >> log.txt", shell=True, stdin=subprocess.PIPE)
-            for j in output.stdout:
-                subprocess.Popen(f"{str(j)} >> log.txt", shell=True, stdin=subprocess.PIPE)
     else:
         print("no suspect task found")
 
