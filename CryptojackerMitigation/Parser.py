@@ -10,12 +10,11 @@ class Parser:
         for i in whitelistFile:
             whitelistFile = i.split(",")
 
-        countNetworkStamps = 0
         parsedFile = []
         for i in nethogs:
             index = 0
             if i.startswith("Refreshing:"):
-                countNetworkStamps += 1
+                continue
             if not i.startswith("Refreshing:"):
                 for j in i:
                     if j.isalpha():
@@ -30,7 +29,7 @@ class Parser:
                             parsedFile.append(file[2][ind:])
                             break
                         ind += 1
-        runningT = {}
+        runningTasks = {}
         for i in parsedFile:
             counter = 0
             check = 0
@@ -44,13 +43,12 @@ class Parser:
                     left = check + 1
                     flag = False
                 if counter == 2:
-                    runningT[i[left:check][::-1]] = i[check + 1:][::-1]
+                    runningTasks[i[left:check][::-1]] = i[check + 1:][::-1]
                     break
                 check += 1
 
         maliciousTasks = {}
-        for k, v in runningT.items():
+        for k, v in runningTasks.items():
             if v not in whitelistFile:
                 maliciousTasks[k] = v
-        print(maliciousTasks)
-        return runningT
+        return maliciousTasks

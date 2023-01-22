@@ -1,7 +1,7 @@
 import socket
 import argparse
 
-PORT = 1234
+PORT = 1235
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--ip', required=False, help='Please set the IP address of the MTDServer.')
@@ -14,8 +14,12 @@ def main():
         s.connect((str(args.ip), args.port))
     else:
         s.connect((socket.gethostname(), PORT))
-    s.send(bytes(args.attack, "utf-8"))
-    print(f"Attack report was sent: {args.attack}")
+
+    if args.attack == "recon" or args.attack == "cj":
+        s.send(bytes(args.attack, "utf-8"))
+        print(f"Attack report was sent: " + args.attack)
+    else:
+        print("There is no mitigation solution for this attack " + args.attack + ", please use recon or cj")
 
 
 if __name__ == '__main__':
