@@ -29,7 +29,6 @@ def mitigateCryptojacker():
                 print("No more processes with name '" + maliciousPrograms[i] + "'")
     else:
         print("no suspect task found")
-        exit()
 
 
 def startNetworkTracking():
