@@ -17,7 +17,7 @@ def main():
 
     if args.attack == "recon" or args.attack == "cj":
         s.send(bytes(args.attack, "utf-8"))
-        print(f"Attack report was sent: " + args.attack)
+        print("Attack report was sent: " + args.attack)
     else:
         print("There is no mitigation solution for this attack " + args.attack + ", please use recon or cj")
 
