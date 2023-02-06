@@ -5,7 +5,6 @@ from Parser import Parser
 
 def mitigateCryptojacker():
     # We need to update the db to locate the actual target file
-    subprocess.Popen("rm nethogs.txt", shell=True, stdout=subprocess.PIPE)
     subprocess.Popen("updatedb", shell=True, stdout=subprocess.PIPE)
 
     print("started network tracking")
@@ -30,6 +29,7 @@ def mitigateCryptojacker():
                 print("No more processes with name '" + maliciousPrograms[i] + "'")
     else:
         print("no suspect task found")
+        exit()
 
 
 def startNetworkTracking():
