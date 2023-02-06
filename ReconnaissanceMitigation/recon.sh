@@ -4,8 +4,9 @@
 ### first flush all the iptables Rules
 iptables -F
 iptables -X
-### INPUT iptables Rules
-### Accept loopback input
+
+############## INPUT iptables Rules ##############
+### Accept loopback interface
 iptables -A INPUT -i lo -p all -j ACCEPT
 
 ### add a rule to explicitly allow all traffic related to an existing connection
@@ -14,13 +15,11 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 ### Dropping all invalid packets, since those are reconnaissance attack packets
 iptables -A INPUT -m state --state INVALID -j DROP
-
-### if we allow this then information about the OS are shown else not
 iptables -A FORWARD -m state --state INVALID -j DROP
 
 ### Protecting against port scans
-### Attacking IP will be blocked for ssh connection for 24 hours (3600 x 24 = 86400 Seconds)
-### port scans are still possible from the IP but get wrong data
+### Attacking IP will be blocked for all connections for 24 hours (3600 x 24 = 86400 Seconds)
+### port scans are still possible, because of stealth scan --> already changed MAC address
 iptables -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP
 iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
 
@@ -39,12 +38,6 @@ iptables -A INPUT -p tcp --dport 80 -i eth0 -m state --state NEW -m recent --upd
 
 iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --set
 iptables -A INPUT -p tcp --dport 443 -i eth0 -m state --state NEW -m recent --update --seconds 30 --hitcount 2 -j DROP
-### Allow the following ports through from outside
-### SMTP mail sender = 25
-### DNS =53
-### HTTP = 80
-### HTTPS = 443
-### SSH = 22
 
 ### Keep the following ports through open to the public
 iptables -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
@@ -58,7 +51,7 @@ iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 ### Lastly reject All INPUT traffic
 iptables -A INPUT -j REJECT
 
-################# Below are for OUTPUT iptables rules #############################################
+################# Below are for OUTPUT iptables rules #####################
 
 ### Allow loopback OUTPUT
 iptables -A OUTPUT -o lo -j ACCEPT
