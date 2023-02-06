@@ -37,7 +37,7 @@ def main():
     # start MTD solution deployer in background
     while True:
         clientSocket, address = s.accept()
-        print("Connection form " + address)
+        print("Connection form " + address[0])
         attack = clientSocket.recv(1024).decode('utf-8')
         if attack == "recon":
             currentPath = os.getcwd() + "/ReconnaissanceMitigation"
